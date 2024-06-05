@@ -8,6 +8,7 @@ const allowedBoards = Array(9).fill(true); // Track if board can be selected
 document.addEventListener('DOMContentLoaded', () => {
     initializeBoards();
     highlightAllowedBoards();
+    updateCurrentPlayerDisplay();
 });
 
 // Initialize boards by adding cells programmatically
@@ -57,6 +58,7 @@ function handleCellClick(event) {
     highlightAllowedBoards();
 
     currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+    updateCurrentPlayerDisplay();
 }
 
 // Mark a board as won by the current player
@@ -88,6 +90,11 @@ function highlightAllowedBoards() {
             board.style.borderColor = 'black';
         }
     });
+}
+
+// Update the display for the current player
+function updateCurrentPlayerDisplay() {
+    document.getElementById('current-player').textContent = currentPlayer;
 }
 
 // Check if a board is full
