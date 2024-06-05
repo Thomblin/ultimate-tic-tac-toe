@@ -96,9 +96,9 @@ function highlightAllowedBoards() {
     const boardContainers = document.querySelectorAll('.board-container');
     boardContainers.forEach((board, index) => {
         if (nextBoardIndex === index) {
-            board.style.borderColor = 'red';
+            board.style.borderColor = '#e64ec0';
         } else if (nextBoardIndex === null && allowedBoards[index]) {
-            board.style.borderColor = 'red';
+            board.style.borderColor = '#e64ec0';
         } else {
             board.style.borderColor = 'black';
         }

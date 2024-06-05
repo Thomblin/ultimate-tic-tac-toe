@@ -67,3 +67,6 @@ finally, if a board was drawn (no winner), replace it with the ".winner" style a
 
 create a background image that we can add to the page to look a little nicer. Add a header as well, just containing "Ultimate Tic Tac Toe" and a small reset button to restart the game
 
+**User**
+
+Change the red color of the current player, board and reset button to #e64ec0

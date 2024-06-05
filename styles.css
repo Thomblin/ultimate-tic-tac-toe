@@ -4,10 +4,10 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background: url('background-pattern.png');
+    background: url('background-pattern.png'); /* Assumes background-pattern.png exists */
+    background-color: #f4f4f4;
     margin: 0;
     font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
 }
 
 header {
@@ -28,7 +28,7 @@ header h1 {
 }
 
 header #reset-button {
-    background-color: #ff4081;
+    background-color: #e64ec0;
     border: none;
     padding: 10px 20px;
     font-size: 1rem;
@@ -39,7 +39,7 @@ header #reset-button {
 }
 
 header #reset-button:hover {
-    background-color: #e91e63;
+    background-color: #d03fa8;
 }
 
 .current-player-container {
@@ -50,7 +50,7 @@ header #reset-button:hover {
 
 .highlight {
     font-weight: bold;
-    color: red;
+    color: #e64ec0;
 }
 
 .ultimate-board {
