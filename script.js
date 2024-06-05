@@ -2,6 +2,7 @@ let currentPlayer = 'X';
 let nextBoardIndex = null; // Keeps track of the next board index
 const cells = document.querySelectorAll('.cell');
 const boardState = Array(9).fill(null).map(() => Array(9).fill(''));
+const boardWinners = Array(9).fill(null); // Track overall board winners
 const allowedBoards = Array(9).fill(true); // Track if board can be selected
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -36,8 +37,13 @@ function handleCellClick(event) {
     boardState[boardIndex][cellIndex] = currentPlayer;
 
     if (checkWin(boardIndex)) {
-        alert(`Player ${currentPlayer} wins board ${boardIndex}`);
-        allowedBoards[boardIndex] = false;
+        markBoardAsWon(boardIndex);
+        boardWinners[boardIndex] = currentPlayer;
+
+        if (checkOverallWin()) {
+            setTimeout(() => alert(`Player ${currentPlayer} wins the game!`), 10); // 10ms delay to allow DOM update
+            return;
+        }
     }
 
     const nextBoardRow = Math.floor(cellIndex / 3);
@@ -53,9 +59,17 @@ function handleCellClick(event) {
     currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
 }
 
+// Mark a board as won by the current player
+function markBoardAsWon(boardIndex) {
+    const board = document.getElementById(`board-${boardIndex}`);
+    board.innerHTML = `<div class="winner">${currentPlayer}</div>`;
+    allowedBoards[boardIndex] = false;
+}
+
 // Determine if a move is allowed
 function isMoveAllowed(boardIndex, cellIndex) {
     if (boardState[boardIndex][cellIndex] !== '') return false; // Cell is not empty
+    if (boardWinners[boardIndex]) return false; // Board already won
 
     if (nextBoardIndex === null) return true; // First move or no restriction
 
@@ -93,6 +107,21 @@ function checkWin(boardIndex) {
     return winConditions.some(condition => {
         return condition.every(index => {
             return board[index] === currentPlayer;
+        });
+    });
+}
+
+// Check for an overall win on the meta-board
+function checkOverallWin() {
+    const winConditions = [
+        [0, 1, 2], [3, 4, 5], [6, 7, 8], // rows
+        [0, 3, 6], [1, 4, 7], [2, 5, 8], // columns
+        [0, 4, 8], [2, 4, 6]             // diagonals
+    ];
+
+    return winConditions.some(condition => {
+        return condition.every(index => {
+            return boardWinners[index] === currentPlayer;
         });
     });
 }
