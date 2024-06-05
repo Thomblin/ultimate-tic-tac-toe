@@ -27,12 +27,19 @@ body {
 }
 
 .board-container {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(3, 1fr);
     border: 3px solid #000;
     width: 200px;
     height: 200px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+}
+
+.won-board {
+    display: flex; /* Overrides grid display for won boards */
+    justify-content: center;
+    align-items: center;
+    position: relative;
 }
 
 .cell {

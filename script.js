@@ -65,6 +65,7 @@ function handleCellClick(event) {
 function markBoardAsWon(boardIndex) {
     const board = document.getElementById(`board-${boardIndex}`);
     board.innerHTML = `<div class="winner">${currentPlayer}</div>`;
+    board.classList.add('won-board');
     allowedBoards[boardIndex] = false;
 }
 
