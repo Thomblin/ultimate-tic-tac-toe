@@ -1,5 +1,6 @@
 let currentPlayer = 'X';
 let nextBoardIndex = null; // Keeps track of the next board index
+let gameWon = false; // Flag to track if the game is complete
 const cells = document.querySelectorAll('.cell');
 const boardState = Array(9).fill(null).map(() => Array(9).fill(''));
 const boardWinners = Array(9).fill(null); // Track overall board status: false for ongoing, 'X', 'O', or 'draw' for completed
@@ -29,6 +30,8 @@ function initializeBoards() {
 
 // Handle cell click event
 function handleCellClick(event) {
+    if (gameWon) return; // No actions if game is already won
+
     const cell = event.target;
     const boardIndex = parseInt(cell.dataset.boardIndex);
     const cellIndex = parseInt(cell.dataset.cellIndex);
@@ -43,7 +46,9 @@ function handleCellClick(event) {
         boardWinners[boardIndex] = currentPlayer;
 
         if (checkOverallWin()) {
+            gameWon = true;
             setTimeout(() => alert(`Player ${currentPlayer} wins the game!`), 10); // 10ms delay to allow DOM update
+            highlightAllowedBoards(); // Clear highlights
             return;
         }
     } else if (isBoardFull(boardIndex)) {
@@ -94,6 +99,11 @@ function isMoveAllowed(boardIndex, cellIndex) {
 // Highlight the allowed boards
 function highlightAllowedBoards() {
     const boardContainers = document.querySelectorAll('.board-container');
+    if (gameWon) { // No highlights if game is won
+        boardContainers.forEach(board => board.style.borderColor = 'black');
+        return;
+    }
+
     boardContainers.forEach((board, index) => {
         if (nextBoardIndex === index) {
             board.style.borderColor = '#e64ec0';
@@ -114,6 +124,7 @@ function updateCurrentPlayerDisplay() {
 function resetGame() {
     currentPlayer = 'X';
     nextBoardIndex = null;
+    gameWon = false;
     for (let i = 0; i < 9; i++) {
         boardState[i] = Array(9).fill('');
         boardWinners[i] = null;
