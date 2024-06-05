@@ -1,9 +1,12 @@
 let currentPlayer = 'X';
+let nextBoardIndex = null; // Keeps track of the next board index
 const cells = document.querySelectorAll('.cell');
 const boardState = Array(9).fill(null).map(() => Array(9).fill(''));
+const allowedBoards = Array(9).fill(true); // Track if board can be selected
 
 document.addEventListener('DOMContentLoaded', () => {
     initializeBoards();
+    highlightAllowedBoards();
 });
 
 // Initialize boards by adding cells programmatically
@@ -24,17 +27,51 @@ function initializeBoards() {
 // Handle cell click event
 function handleCellClick(event) {
     const cell = event.target;
-    const boardIndex = cell.dataset.boardIndex;
-    const cellIndex = cell.dataset.cellIndex;
-
-    if (boardState[boardIndex][cellIndex] !== '') return;
+    const boardIndex = parseInt(cell.dataset.boardIndex);
+    const cellIndex = parseInt(cell.dataset.cellIndex);
+    
+    if (!isMoveAllowed(boardIndex, cellIndex)) return;
 
     cell.textContent = currentPlayer;
     boardState[boardIndex][cellIndex] = currentPlayer;
+
     if (checkWin(boardIndex)) {
         alert(`Player ${currentPlayer} wins board ${boardIndex}`);
+        allowedBoards[boardIndex] = false;
     }
+
+    const nextBoardRow = Math.floor(cellIndex / 3);
+    const nextBoardCol = cellIndex % 3;
+    nextBoardIndex = nextBoardRow * 3 + nextBoardCol;
+
+    if (!allowedBoards[nextBoardIndex]) {
+        nextBoardIndex = null; // Allow any board if the intended next board is not allowed
+    }
+
+    highlightAllowedBoards();
+
     currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+}
+
+// Determine if a move is allowed
+function isMoveAllowed(boardIndex, cellIndex) {
+    if (boardState[boardIndex][cellIndex] !== '') return false; // Cell is not empty
+
+    if (nextBoardIndex === null) return true; // First move or no restriction
+
+    return boardIndex === nextBoardIndex && allowedBoards[nextBoardIndex];
+}
+
+// Highlight the allowed boards
+function highlightAllowedBoards() {
+    const boardContainers = document.querySelectorAll('.board-container');
+    boardContainers.forEach((board, index) => {
+        if (nextBoardIndex === null || index === nextBoardIndex || allowedBoards[index]) {
+            board.style.borderColor = 'red';
+        } else {
+            board.style.borderColor = 'black';
+        }
+    });
 }
 
 // Check for a win on a given board
