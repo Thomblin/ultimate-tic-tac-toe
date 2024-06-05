@@ -62,3 +62,8 @@ the css rule ".board-container" should not contain "display: grid" if the board 
 **User**
 
 finally, if a board was drawn (no winner), replace it with the ".winner" style as well, however leave it empty (do not show a big X or O)
+
+**User**
+
+create a background image that we can add to the page to look a little nicer. Add a header as well, just containing "Ultimate Tic Tac Toe" and a small reset button to restart the game
+

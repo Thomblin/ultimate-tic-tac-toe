@@ -2,13 +2,14 @@ let currentPlayer = 'X';
 let nextBoardIndex = null; // Keeps track of the next board index
 const cells = document.querySelectorAll('.cell');
 const boardState = Array(9).fill(null).map(() => Array(9).fill(''));
-const boardWinners = Array(9).fill(false); // Track overall board status: false for ongoing, 'X', 'O', or 'draw' for completed
+const boardWinners = Array(9).fill(null); // Track overall board status: false for ongoing, 'X', 'O', or 'draw' for completed
 const allowedBoards = Array(9).fill(true); // Track if board can be selected
 
 document.addEventListener('DOMContentLoaded', () => {
     initializeBoards();
     highlightAllowedBoards();
     updateCurrentPlayerDisplay();
+    document.getElementById('reset-button').addEventListener('click', resetGame);
 });
 
 // Initialize boards by adding cells programmatically
@@ -107,6 +108,28 @@ function highlightAllowedBoards() {
 // Update the display for the current player
 function updateCurrentPlayerDisplay() {
     document.getElementById('current-player').textContent = currentPlayer;
+}
+
+// Reset the game to its initial state
+function resetGame() {
+    currentPlayer = 'X';
+    nextBoardIndex = null;
+    for (let i = 0; i < 9; i++) {
+        boardState[i] = Array(9).fill('');
+        boardWinners[i] = null;
+        allowedBoards[i] = true;
+    }
+
+    const boardContainers = document.querySelectorAll('.board-container');
+    boardContainers.forEach((board, index) => {
+        board.innerHTML = '';
+        board.classList.remove('won-board');
+        board.style.borderColor = 'black'; // Reset border color
+    });
+
+    initializeBoards();
+    highlightAllowedBoards();
+    updateCurrentPlayerDisplay();
 }
 
 // Check if a board is full
