@@ -44,8 +44,8 @@ function handleCellClick(event) {
     const nextBoardCol = cellIndex % 3;
     nextBoardIndex = nextBoardRow * 3 + nextBoardCol;
 
-    if (!allowedBoards[nextBoardIndex]) {
-        nextBoardIndex = null; // Allow any board if the intended next board is not allowed
+    if (!allowedBoards[nextBoardIndex] || isBoardFull(nextBoardIndex)) {
+        nextBoardIndex = null; // Allow any board if the intended next board is not allowed or is full
     }
 
     highlightAllowedBoards();
@@ -66,12 +66,19 @@ function isMoveAllowed(boardIndex, cellIndex) {
 function highlightAllowedBoards() {
     const boardContainers = document.querySelectorAll('.board-container');
     boardContainers.forEach((board, index) => {
-        if (nextBoardIndex === null || index === nextBoardIndex || allowedBoards[index]) {
+        if (nextBoardIndex === index) {
+            board.style.borderColor = 'red';
+        } else if (nextBoardIndex === null && allowedBoards[index]) {
             board.style.borderColor = 'red';
         } else {
             board.style.borderColor = 'black';
         }
     });
+}
+
+// Check if a board is full
+function isBoardFull(boardIndex) {
+    return boardState[boardIndex].every(cell => cell !== '');
 }
 
 // Check for a win on a given board
