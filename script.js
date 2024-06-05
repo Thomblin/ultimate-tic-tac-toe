@@ -2,7 +2,7 @@ let currentPlayer = 'X';
 let nextBoardIndex = null; // Keeps track of the next board index
 const cells = document.querySelectorAll('.cell');
 const boardState = Array(9).fill(null).map(() => Array(9).fill(''));
-const boardWinners = Array(9).fill(null); // Track overall board winners
+const boardWinners = Array(9).fill(false); // Track overall board status: false for ongoing, 'X', 'O', or 'draw' for completed
 const allowedBoards = Array(9).fill(true); // Track if board can be selected
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -45,14 +45,17 @@ function handleCellClick(event) {
             setTimeout(() => alert(`Player ${currentPlayer} wins the game!`), 10); // 10ms delay to allow DOM update
             return;
         }
+    } else if (isBoardFull(boardIndex)) {
+        markBoardAsDrawn(boardIndex);
+        boardWinners[boardIndex] = 'draw';
     }
 
     const nextBoardRow = Math.floor(cellIndex / 3);
     const nextBoardCol = cellIndex % 3;
     nextBoardIndex = nextBoardRow * 3 + nextBoardCol;
 
-    if (!allowedBoards[nextBoardIndex] || isBoardFull(nextBoardIndex)) {
-        nextBoardIndex = null; // Allow any board if the intended next board is not allowed or is full
+    if (!allowedBoards[nextBoardIndex] || boardWinners[nextBoardIndex]) {
+        nextBoardIndex = null; // Allow any board if the intended next board is not allowed, won or drawn
     }
 
     highlightAllowedBoards();
@@ -69,10 +72,18 @@ function markBoardAsWon(boardIndex) {
     allowedBoards[boardIndex] = false;
 }
 
+// Mark a board as drawn
+function markBoardAsDrawn(boardIndex) {
+    const board = document.getElementById(`board-${boardIndex}`);
+    board.innerHTML = `<div class="winner"></div>`;
+    board.classList.add('won-board');
+    allowedBoards[boardIndex] = false;
+}
+
 // Determine if a move is allowed
 function isMoveAllowed(boardIndex, cellIndex) {
     if (boardState[boardIndex][cellIndex] !== '') return false; // Cell is not empty
-    if (boardWinners[boardIndex]) return false; // Board already won
+    if (boardWinners[boardIndex]) return false; // Board already completed
 
     if (nextBoardIndex === null) return true; // First move or no restriction
 
